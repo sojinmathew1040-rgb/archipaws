@@ -1,0 +1,22 @@
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Media and Uploads
+*.mp4
+*.avi
+*.mkv
+*.mov
+uploads/**/*.mp4
+uploads/*.mp4

@@ -153,6 +153,7 @@ $unique_sizes = array_values(array_unique($unique_sizes));
     .pro-thumb {
         width: 100px;
         height: 100px;
+        flex-shrink: 0;
         background: #fff;
         border-radius: 20px;
         display: flex;
@@ -336,6 +337,12 @@ $unique_sizes = array_values(array_unique($unique_sizes));
         .pro-add-btn {
             flex: none;
             width: 100%;
+        }
+
+        .pro-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
         }
     }
 
@@ -846,7 +853,151 @@ $unique_sizes = array_values(array_unique($unique_sizes));
             <?= htmlspecialchars($product['stock_status']) ?> (<span id="stock-display"><?= $product['stock_quantity'] ?></span> in stock)
         </div>
 
-        <div class="pro-desc">
+        <?php if (!empty($unique_colors) || !empty($unique_sizes)): ?>
+            <?php
+            if (!function_exists('get_color_hex')) {
+                function get_color_hex($color_name) {
+                    $colors = [
+                        'red' => '#ff3b30',
+                        'blue' => '#007aff',
+                        'green' => '#34c759',
+                        'yellow' => '#ffcc00',
+                        'orange' => '#ff9500',
+                        'purple' => '#af52de',
+                        'pink' => '#ff2d55',
+                        'grey' => '#8e8e93',
+                        'gray' => '#8e8e93',
+                        'white' => '#ffffff',
+                        'black' => '#1d1d1f',
+                        'brown' => '#a2845e',
+                        'beige' => '#f5f5dc',
+                        'natural' => '#e8cfa9',
+                        'oak' => '#b8860b',
+                        'walnut' => '#5c4033',
+                        'espresso' => '#3d2314',
+                    ];
+                    $clean = strtolower(trim($color_name));
+                    return $colors[$clean] ?? $clean;
+                }
+            }
+            ?>
+            <div class="pro-variations" style="margin-bottom: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                
+                <?php if (!empty($unique_colors)): ?>
+                    <div style="margin-bottom: 20px;">
+                        <span style="display: block; font-weight: 600; font-size: 13px; text-transform: uppercase; color: #666; margin-bottom: 8px;">
+                            Color: <span id="selected-color-name" style="color: #1d1d1f; text-transform: none; font-weight: 700;"><?= htmlspecialchars($unique_colors[0]) ?></span>
+                        </span>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                            <?php foreach ($unique_colors as $c_idx => $color): ?>
+                                <label style="cursor: pointer; position: relative;" title="<?= htmlspecialchars($color) ?>">
+                                    <input type="radio" name="selected_color" 
+                                           value="<?= htmlspecialchars($color) ?>" 
+                                           <?= $c_idx === 0 ? 'checked' : '' ?>
+                                           onchange="onColorChange()"
+                                           style="position: absolute; opacity: 0; width: 0; height: 0;">
+                                    <span class="color-swatch-outer">
+                                        <span class="color-swatch-inner" style="background-color: <?= get_color_hex($color) ?>;"></span>
+                                    </span>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($unique_sizes)): ?>
+                    <div style="margin-bottom: 20px;">
+                        <span style="display: block; font-weight: 600; font-size: 13px; text-transform: uppercase; color: #666; margin-bottom: 8px;">
+                            Size: <span id="selected-size-name" style="color: #1d1d1f; text-transform: none; font-weight: 700;"><?= htmlspecialchars($unique_sizes[0]) ?></span>
+                        </span>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <?php foreach ($unique_sizes as $s_idx => $size): ?>
+                                <label style="cursor: pointer; position: relative;">
+                                    <input type="radio" name="selected_size" 
+                                           value="<?= htmlspecialchars($size) ?>" 
+                                           <?= $s_idx === 0 ? 'checked' : '' ?>
+                                           onchange="onSizeChange()"
+                                           style="position: absolute; opacity: 0; width: 0; height: 0;">
+                                    <span class="size-badge">
+                                        <?= htmlspecialchars($size) ?>
+                                    </span>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                
+            </div>
+            
+            <style>
+                .color-swatch-outer {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 50%;
+                    border: 2px solid transparent;
+                    transition: all 0.2s ease;
+                    background: transparent;
+                }
+                .color-swatch-outer:hover {
+                    transform: scale(1.1);
+                }
+                .color-swatch-inner {
+                    display: block;
+                    width: 26px;
+                    height: 26px;
+                    border-radius: 50%;
+                    border: 1px solid rgba(0, 0, 0, 0.15);
+                    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+                }
+                
+                input[type="radio"]:checked + .color-swatch-outer {
+                    border-color: #1d1d1f;
+                }
+                
+                /* Size badges selection styling */
+                .size-badge {
+                    display: inline-block;
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    border: 1px solid #ddd;
+                    font-weight: 500;
+                    font-size: 13px;
+                    background: #fff;
+                    color: #1d1d1f;
+                    transition: all 0.3s;
+                    min-width: 44px;
+                    text-align: center;
+                }
+                .size-badge:hover {
+                    border-color: #86868b;
+                }
+                
+                input[type="radio"]:checked + .size-badge {
+                    border-color: #1d1d1f;
+                    background: #1d1d1f;
+                    color: #fff;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                }
+            </style>
+        <?php endif; ?>
+
+        <div class="pro-action-area" style="margin-bottom: 40px;">
+            <div class="pro-qty">
+                <button onclick="updateQty(-1)">-</button>
+                <input type="text" id="p-qty" value="1" readonly>
+                <button onclick="updateQty(1)">+</button>
+            </div>
+            <button class="pro-add-btn"
+                onclick="addToCart(<?= $product['id'] ?>, parseInt(document.getElementById('p-qty').value), event, window.selectedCombinationId)"
+                <?= $product['stock_quantity'] <= 0 ? 'disabled' : '' ?>>
+                <?= $product['stock_quantity'] <= 0 ? 'Out of Stock' : 'Add to Bag' ?>
+            </button>
+        </div>
+
+        <div class="pro-desc" style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px;">
             <?php 
                 $desc = $product['description'] ?? 'Elegantly minimal, durably crafted. Designed to look right at home anywhere.';
                 if (strpos($desc, '<p>') !== false || strpos($desc, '<br>') !== false || strpos($desc, '<strong>') !== false || strpos($desc, '<ul>') !== false || strpos($desc, '<li>') !== false) {
@@ -872,78 +1023,6 @@ $unique_sizes = array_values(array_unique($unique_sizes));
                 </table>
             </div>
         <?php endif; ?>
-
-        <?php if (!empty($unique_colors) || !empty($unique_sizes)): ?>
-            <div class="pro-variations" style="margin-bottom: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-                
-                <?php if (!empty($unique_colors)): ?>
-                    <div style="margin-bottom: 20px;">
-                        <span style="display: block; font-weight: 600; font-size: 13px; text-transform: uppercase; color: #666; margin-bottom: 8px;">
-                            Select Color
-                        </span>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <?php foreach ($unique_colors as $c_idx => $color): ?>
-                                <label style="cursor: pointer; position: relative;">
-                                    <input type="radio" name="selected_color" 
-                                           value="<?= htmlspecialchars($color) ?>" 
-                                           <?= $c_idx === 0 ? 'checked' : '' ?>
-                                           onchange="onColorChange()"
-                                           style="position: absolute; opacity: 0; width: 0; height: 0;">
-                                    <span class="var-badge" style="display: inline-block; padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; font-weight: 500; font-size: 13px; background: #fff; color: #1d1d1f; transition: all 0.3s;">
-                                        <?= htmlspecialchars($color) ?>
-                                    </span>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-                <?php if (!empty($unique_sizes)): ?>
-                    <div style="margin-bottom: 20px;">
-                        <span style="display: block; font-weight: 600; font-size: 13px; text-transform: uppercase; color: #666; margin-bottom: 8px;">
-                            Select Size
-                        </span>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <?php foreach ($unique_sizes as $s_idx => $size): ?>
-                                <label style="cursor: pointer; position: relative;">
-                                    <input type="radio" name="selected_size" 
-                                           value="<?= htmlspecialchars($size) ?>" 
-                                           <?= $s_idx === 0 ? 'checked' : '' ?>
-                                           onchange="onSizeChange()"
-                                           style="position: absolute; opacity: 0; width: 0; height: 0;">
-                                    <span class="var-badge" style="display: inline-block; padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; font-weight: 500; font-size: 13px; background: #fff; color: #1d1d1f; transition: all 0.3s;">
-                                        <?= htmlspecialchars($size) ?>
-                                    </span>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-                
-            </div>
-            
-            <style>
-                input[type="radio"]:checked + .var-badge {
-                    border-color: #1d1d1f;
-                    background: #1d1d1f;
-                    color: #fff;
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-                }
-            </style>
-        <?php endif; ?>
-
-        <div class="pro-action-area">
-            <div class="pro-qty">
-                <button onclick="updateQty(-1)">-</button>
-                <input type="text" id="p-qty" value="1" readonly>
-                <button onclick="updateQty(1)">+</button>
-            </div>
-            <button class="pro-add-btn"
-                onclick="addToCart(<?= $product['id'] ?>, parseInt(document.getElementById('p-qty').value), event, window.selectedCombinationId)"
-                <?= $product['stock_quantity'] <= 0 ? 'disabled' : '' ?>>
-                <?= $product['stock_quantity'] <= 0 ? 'Out of Stock' : 'Add to Bag' ?>
-            </button>
-        </div>
     </div>
 </div>
 
@@ -1111,22 +1190,45 @@ $unique_sizes = array_values(array_unique($unique_sizes));
     function onColorChange() {
         filterImagesByColor();
         updateDynamicPriceAndStock();
+        
+        const selectedColorRadio = document.querySelector('input[name="selected_color"]:checked');
+        const colorTextEl = document.getElementById('selected-color-name');
+        if (selectedColorRadio && colorTextEl) {
+            colorTextEl.innerText = selectedColorRadio.value;
+        }
     }
 
     function onSizeChange() {
         updateDynamicPriceAndStock();
+        
+        const selectedSizeRadio = document.querySelector('input[name="selected_size"]:checked');
+        const sizeTextEl = document.getElementById('selected-size-name');
+        if (selectedSizeRadio && sizeTextEl) {
+            sizeTextEl.innerText = selectedSizeRadio.value;
+        }
     }
 
     function filterImagesByColor() {
         const selectedColorRadio = document.querySelector('input[name="selected_color"]:checked');
         const selectedColor = selectedColorRadio ? selectedColorRadio.value : '';
         
-        // General images have color_value = null
-        const filtered = rawImages.filter(img => {
-            return !img.color_value || img.color_value === selectedColor;
+        const matching = [];
+        const general = [];
+        const otherColors = [];
+        
+        rawImages.forEach(img => {
+            if (img.color_value && img.color_value === selectedColor) {
+                matching.push(img);
+            } else if (!img.color_value) {
+                general.push(img);
+            } else {
+                otherColors.push(img);
+            }
         });
         
-        activeImages = filtered.map(img => img.image_path);
+        const combined = [...matching, ...general, ...otherColors];
+        
+        activeImages = combined.map(img => img.image_path);
         if (activeImages.length === 0) {
             activeImages = ['assets/images/16.jpeg'];
         }

@@ -32,7 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $file_ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
                 if (in_array($file_ext, $allowed_exts)) {
                     $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $_FILES['image']['name']);
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], '../uploads/' . $filename)) {
+                    $target_dir = '../uploads/';
+                    if (!file_exists($target_dir)) {
+                        mkdir($target_dir, 0755, true);
+                    }
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_dir . $filename)) {
                         $image_path = 'uploads/' . $filename;
                     } else {
                         $upload_error = "Failed to save the uploaded file to disk.";

@@ -43,7 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     for ($i = 0; $i < $file_count; $i++) {
                         if ($_FILES[$file_key]['error'][$i] === 0) {
                             $filename = time() . '_' . $idx . '_' . $i . '_' . $_FILES[$file_key]['name'][$i];
-                            move_uploaded_file($_FILES[$file_key]['tmp_name'][$i], '../uploads/' . $filename);
+                            $target_dir = '../uploads/';
+                            if (!file_exists($target_dir)) {
+                                mkdir($target_dir, 0755, true);
+                            }
+                            move_uploaded_file($_FILES[$file_key]['tmp_name'][$i], $target_dir . $filename);
                             $img_path = 'uploads/' . $filename;
                             $pdo->prepare("INSERT INTO product_images (product_id, image_path, sort_order, color_value) VALUES (?, ?, ?, ?)")
                                 ->execute([$product_id, $img_path, $sort_order++, $color_val]);

@@ -31,7 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $image_path = $category['image_path'];
         if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
             $filename = time() . '_' . $_FILES['image']['name'];
-            move_uploaded_file($_FILES['image']['tmp_name'], '../uploads/' . $filename);
+            $target_dir = '../uploads/';
+            if (!file_exists($target_dir)) {
+                mkdir($target_dir, 0755, true);
+            }
+            move_uploaded_file($_FILES['image']['tmp_name'], $target_dir . $filename);
             $image_path = 'uploads/' . $filename;
             
             // Optionally delete the old image file if it wasn't a placeholder

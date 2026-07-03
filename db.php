@@ -18,6 +18,7 @@ try {
 
     // Ensure all required modern tables exist (self-healing)
     ensure_tables_exist($pdo);
+    check_and_expire_deal($pdo);
 } catch (PDOException $e) {
     // Check if the error is due to an unknown database (1049)
     if ($e->getCode() == 1049 || strpos($e->getMessage(), '1049') !== false || strpos($e->getMessage(), 'Unknown database') !== false) {
@@ -46,6 +47,7 @@ try {
 
             // 5. Ensure all modern tables exist and are seeded (categories, testimonials, deal of the day, reviews)
             ensure_tables_exist($pdo);
+            check_and_expire_deal($pdo);
         } catch (PDOException $innerException) {
             die("Database auto-initialization failed: " . $innerException->getMessage());
         }
@@ -110,6 +112,24 @@ function ensure_tables_exist($pdo)
             // Ignore if already exists
         }
 
+        try {
+            $pdo->exec("ALTER TABLE deal_of_the_day ADD COLUMN original_price DECIMAL(10,2) DEFAULT 0.00");
+        } catch (PDOException $e) {
+            // Ignore if already exists
+        }
+
+        try {
+            $pdo->exec("ALTER TABLE deal_of_the_day ADD COLUMN original_old_price DECIMAL(10,2) DEFAULT NULL");
+        } catch (PDOException $e) {
+            // Ignore if already exists
+        }
+
+        try {
+            $pdo->exec("ALTER TABLE deal_of_the_day ADD COLUMN discount_rate DECIMAL(10,2) DEFAULT 0.00");
+        } catch (PDOException $e) {
+            // Ignore if already exists
+        }
+
 
         // 1. Create categories table
         $hasCategories = $pdo->query("SHOW TABLES LIKE 'categories'")->fetch() !== false;
@@ -153,6 +173,9 @@ function ensure_tables_exist($pdo)
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 product_id INT NOT NULL,
                 end_time DATETIME NOT NULL,
+                original_price DECIMAL(10,2) DEFAULT 0.00,
+                original_old_price DECIMAL(10,2) DEFAULT NULL,
+                discount_rate DECIMAL(10,2) DEFAULT 0.00,
                 FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
 
@@ -268,4 +291,29 @@ function ensure_tables_exist($pdo)
 function isAdmin()
 {
     return isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+}
+
+// Check if deal of the day has expired and self-heal prices
+function check_and_expire_deal($pdo) {
+    try {
+        $stmt = $pdo->query("SELECT * FROM deal_of_the_day LIMIT 1");
+        $deal = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($deal) {
+            $now = date('Y-m-d H:i:s');
+            if ($now > $deal['end_time']) {
+                $pdo->beginTransaction();
+                
+                // Restore original product pricing
+                $prodStmt = $pdo->prepare("UPDATE products SET price = ?, old_price = ? WHERE id = ?");
+                $prodStmt->execute([$deal['original_price'], $deal['original_old_price'], $deal['product_id']]);
+                
+                // Delete expired deal
+                $pdo->exec("DELETE FROM deal_of_the_day");
+                
+                $pdo->commit();
+            }
+        }
+    } catch (PDOException $e) {
+        // Table or columns might not exist yet during initial setup/migration
+    }
 }

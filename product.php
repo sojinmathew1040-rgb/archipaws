@@ -19,6 +19,20 @@ if (!$product) {
     exit;
 }
 
+// Fetch Related Products of the same category, excluding the current product
+$related_stmt = $pdo->prepare("
+    SELECT p.*, 
+    (SELECT image_path FROM product_images WHERE product_id = p.id ORDER BY sort_order ASC LIMIT 1) as main_image 
+    FROM products p 
+    WHERE p.category = ? AND p.id != ? 
+    ORDER BY p.id DESC 
+    LIMIT 3
+");
+$related_stmt->execute([$product['category'], $id]);
+$related_products = $related_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$wishlist_items = $_SESSION['wishlist'] ?? [];
+
 $img_stmt = $pdo->prepare("SELECT image_path, color_value FROM product_images WHERE product_id = ? ORDER BY sort_order ASC");
 $img_stmt->execute([$id]);
 $images_raw = $img_stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -798,6 +812,17 @@ $unique_sizes = array_values(array_unique($unique_sizes));
             gap: 0;
         }
     }
+
+    .pro-related-wrapper {
+        max-width: 1400px;
+        margin: 0 auto 80px auto;
+        padding: 0 40px;
+    }
+    @media(max-width: 992px) {
+        .pro-related-wrapper {
+            padding: 0 20px;
+        }
+    }
 </style>
 
 <div class="pro-product-wrapper">
@@ -1163,6 +1188,46 @@ $unique_sizes = array_values(array_unique($unique_sizes));
         <?php endif; ?>
     </div>
 </div>
+
+<?php if (!empty($related_products)): ?>
+    <div class="pro-related-wrapper">
+        <h2 style="font-size: 32px; font-weight: 700; color: #1d1d1f; margin-bottom: 40px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding-bottom: 20px;">Related Products</h2>
+        <div class="product-grid">
+            <?php foreach ($related_products as $p): 
+                $in_wishlist = in_array($p['id'], $wishlist_items);
+                ?>
+                <div class="product-card" onclick="window.location='product.php?id=<?= $p['id'] ?>'">
+                    <!-- WISHLIST HEART -->
+                    <div class="wishlist-btn <?= $in_wishlist ? 'active' : '' ?>" onclick="toggleWishlist(event, <?= $p['id'] ?>, this)">
+                        <?= $in_wishlist ? '❤️' : '🤍' ?>
+                    </div>
+
+                    <div class="product-image">
+                        <img src="<?= htmlspecialchars($p['main_image'] ?? 'assets/images/16.jpeg') ?>" alt="<?= htmlspecialchars($p['title']) ?>">
+                        <?php if ($p['badge']): ?>
+                            <span class="badge <?= $p['badge'] ?>"><?= ucfirst($p['badge']) ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="product-info">
+                        <h4><?= htmlspecialchars($p['title']) ?></h4>
+                        <div class="rating">
+                            <?= str_repeat('★', $p['rating']) . str_repeat('☆', 5 - $p['rating']) ?>
+                        </div>
+                        <p class="price">
+                            <?php if ($p['old_price']): ?>
+                                <span class="old-price">₹<?= number_format((float) $p['old_price'], 2) ?></span>
+                            <?php endif; ?>
+                            ₹<?= number_format((float) $p['price'], 2) ?>
+                        </p>
+                        <button class="add-to-cart" <?= $p['stock_status'] == 'Sold Out' ? 'disabled' : '' ?> onclick="event.stopPropagation(); addToCart(<?= $p['id'] ?>)">
+                            <?= $p['stock_status'] == 'Sold Out' ? 'Sold Out' : 'Add to Cart' ?>
+                        </button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
 
 <!-- Lbx HTML -->
 <div id="lbx" class="lbx-overlay">

@@ -119,6 +119,7 @@ try {
                 <li><a href="deal_manager.php">Deal Of The Day</a></li>
                 <li><a href="testimonial_manager.php">Testimonials</a></li>
                 <li><a href="orders.php">Orders</a></li>
+                <li><a href="sales_report.php">Sales Report</a></li>
                 <li><a href="review_manager.php">Reviews</a></li>
                 <li><a href="customizations.php" class="active">Customizations</a></li>
                 <li><a href="logout.php">Logout</a></li>

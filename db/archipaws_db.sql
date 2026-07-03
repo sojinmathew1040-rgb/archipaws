@@ -1,25 +1,11 @@
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Apr 17, 2026 at 01:28 PM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- Archipaws Database Backup
+-- Generated: 2026-07-03 08:39:21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `archipaws_db`
---
+SET FOREIGN_KEY_CHECKS=0;
 
 -- --------------------------------------------------------
 
@@ -27,18 +13,66 @@ SET time_zone = "+00:00";
 -- Table structure for table `admins`
 --
 
+DROP TABLE IF EXISTS `admins`;
 CREATE TABLE `admins` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admins`
 --
 
 INSERT INTO `admins` (`id`, `username`, `password`) VALUES
-(1, 'admin', '$2y$10$xqaxVvJX8NQAYw1nQYvCk.UA8GHCXEuhvkqVNcv2t0EUM8NIfOuaG');
+('1', 'admin', '$2y$10$xqaxVvJX8NQAYw1nQYvCk.UA8GHCXEuhvkqVNcv2t0EUM8NIfOuaG');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE `categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `image_path` varchar(255) DEFAULT 'assets/images/placeholder.jpg',
+  `sort_order` int(11) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `image_path`, `sort_order`) VALUES
+('4', 'DOG', 'uploads/1782106746_download.jpeg', '1'),
+('11', 'CAT', 'uploads/1782106766_download (1).jpeg', '2');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `deal_of_the_day`
+--
+
+DROP TABLE IF EXISTS `deal_of_the_day`;
+CREATE TABLE `deal_of_the_day` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `end_time` datetime NOT NULL,
+  `original_price` decimal(10,2) DEFAULT 0.00,
+  `original_old_price` decimal(10,2) DEFAULT NULL,
+  `discount_rate` decimal(10,2) DEFAULT 0.00,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `deal_of_the_day`
+--
 
 -- --------------------------------------------------------
 
@@ -46,52 +80,27 @@ INSERT INTO `admins` (`id`, `username`, `password`) VALUES
 -- Table structure for table `hero_slides`
 --
 
+DROP TABLE IF EXISTS `hero_slides`;
 CREATE TABLE `hero_slides` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `offer_text` varchar(255) DEFAULT NULL,
   `title_line1` varchar(255) DEFAULT NULL,
   `title_line2` varchar(255) DEFAULT NULL,
   `button_text` varchar(255) DEFAULT NULL,
   `button_link` varchar(255) DEFAULT NULL,
   `image_path` varchar(255) DEFAULT NULL,
-  `sort_order` int(11) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `sort_order` int(11) DEFAULT 0,
+  `phone_number` varchar(100) DEFAULT NULL,
+  `email_address` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `hero_slides`
 --
 
-INSERT INTO `hero_slides` (`id`, `offer_text`, `title_line1`, `title_line2`, `button_text`, `button_link`, `image_path`, `sort_order`) VALUES
-(13, 'SAVE 10 - 20 % OFF', 'Best Destination', 'Your Pets', 'SHOP NOW', 'shop.php', 'uploads/1775545614_1.png', 0),
-(14, 'SAVE 10 - 20 % OFF', 'CHOOSE YOU KENNEL', 'Your Pets', 'SHOP NOW', 'shop.php', 'uploads/1775545650_3.png', 0),
-(15, 'SAVE 10 - 20 % OFF', 'CHOOSE YOU KENNEL', 'Your Pets', 'SHOP NOW', 'shop.php', 'uploads/1775545707_4.png', 0),
-(16, 'SAVE 10 - 20 % OFF', 'CHOOSE YOU KENNEL', 'For Your Pets', 'CLICK HERE', 'shop.php', 'uploads/1775545728_5.png', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `orders`
---
-
-CREATE TABLE `orders` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `phone` varchar(50) NOT NULL,
-  `shipping_address` text NOT NULL,
-  `total_price` decimal(10,2) NOT NULL,
-  `status` varchar(50) DEFAULT 'Pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`id`, `user_id`, `name`, `email`, `phone`, `shipping_address`, `total_price`, `status`, `created_at`) VALUES
-(4, 1, 'SOJIN MATHEW', 'sojinmathew1040@gmail.com', '8943804920', 'kandoth house varappetty p.o kothamagaalam', '5000.00', 'Processing', '2026-04-07 08:07:15'),
-(6, 1, 'SOJIN MATHEW', 'sojinmathew1040@gmail.com', '8943804920', 'kakk', '3500.00', 'Received', '2026-04-10 00:57:05');
+INSERT INTO `hero_slides` (`id`, `offer_text`, `title_line1`, `title_line2`, `button_text`, `button_link`, `image_path`, `sort_order`, `phone_number`, `email_address`) VALUES
+('21', '', '', '', '', 'shop.php', 'uploads/1782106574_5923101-hd_1920_1080_25fps.mp4', '0', '', '');
 
 -- --------------------------------------------------------
 
@@ -99,22 +108,244 @@ INSERT INTO `orders` (`id`, `user_id`, `name`, `email`, `phone`, `shipping_addre
 -- Table structure for table `order_items`
 --
 
+DROP TABLE IF EXISTS `order_items`;
 CREATE TABLE `order_items` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `variation_details` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `order_items`
 --
 
-INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `created_at`) VALUES
-(4, 4, 6, 1, '5000.00', '2026-04-07 08:07:15'),
-(6, 6, 14, 1, '3500.00', '2026-04-10 00:57:05');
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `created_at`, `variation_details`) VALUES
+('4', '4', '6', '1', '5000.00', '2026-04-07 13:37:15', NULL),
+('6', '6', '14', '1', '3500.00', '2026-04-10 06:27:05', NULL),
+('7', '7', '6', '2', '5050.00', '2026-06-14 12:47:11', 'Color: Red, Size: Medium'),
+('8', '7', '6', '1', '5060.00', '2026-06-14 12:47:11', 'Color: Blue, Size: Medium');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(50) NOT NULL,
+  `shipping_address` text NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `status` varchar(50) DEFAULT 'Pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `user_id`, `name`, `email`, `phone`, `shipping_address`, `total_price`, `status`, `created_at`) VALUES
+('4', '1', 'SOJIN MATHEW', 'sojinmathew1040@gmail.com', '8943804920', 'kandoth house varappetty p.o kothamagaalam', '5000.00', 'Processing', '2026-04-07 13:37:15'),
+('6', '1', 'SOJIN MATHEW', 'sojinmathew1040@gmail.com', '8943804920', 'kakk', '3500.00', 'Pending', '2026-04-10 06:27:05'),
+('7', '3', 'Test User', 'testuser@example.com', '1234567890', '123 Test Street, Test City', '15160.00', 'Pending', '2026-06-14 12:47:11');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_customizations`
+--
+
+DROP TABLE IF EXISTS `product_customizations`;
+CREATE TABLE `product_customizations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `customer_email` varchar(255) NOT NULL,
+  `customer_phone` varchar(50) NOT NULL,
+  `customization_details` text NOT NULL,
+  `status` varchar(50) DEFAULT 'Pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `product_customizations_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_customizations_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_customizations`
+--
+
+INSERT INTO `product_customizations` (`id`, `product_id`, `user_id`, `customer_name`, `customer_email`, `customer_phone`, `customization_details`, `status`, `created_at`) VALUES
+('1', '16', '1', 'SOJIN MATHEW', 'sojinmathew1040@gmail.com', '4125588566655', 'lkankgkjarnglkjn', 'Completed', '2026-06-14 13:41:05'),
+('2', '6', NULL, 'Guest Customer', 'guest@example.com', '+91 9988776655', 'Custom size 120x80cm, dark grey finish', 'Pending', '2026-06-14 13:41:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_images`
+--
+
+DROP TABLE IF EXISTS `product_images`;
+CREATE TABLE `product_images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) DEFAULT NULL,
+  `image_path` varchar(255) NOT NULL,
+  `sort_order` int(11) DEFAULT 0,
+  `color_value` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_images`
+--
+
+INSERT INTO `product_images` (`id`, `product_id`, `image_path`, `sort_order`, `color_value`) VALUES
+('63', '14', 'uploads/1781234108_0_pic8.5.webp', '1', NULL),
+('64', '14', 'uploads/1781234108_1_pic8.4.webp', '2', NULL),
+('65', '14', 'uploads/1781234108_2_pic8.3.webp', '0', NULL),
+('66', '14', 'uploads/1781234108_3_pic8.2.webp', '3', NULL),
+('67', '12', 'uploads/1781234188_0_pic3.2.webp', '1', NULL),
+('68', '12', 'uploads/1781234188_1_pic3.1.webp', '2', NULL),
+('69', '12', 'uploads/1781234188_2_pic2.4.webp', '3', NULL),
+('70', '12', 'uploads/1781234188_3_pic2.3.webp', '4', NULL),
+('71', '12', 'uploads/1781234188_4_pic2.2.webp', '5', NULL),
+('72', '10', 'uploads/1781234237_0_pic4.webp', '1', NULL),
+('73', '10', 'uploads/1781234237_1_pic3.webp', '2', NULL),
+('74', '10', 'uploads/1781234237_2_pic2.webp', '3', NULL),
+('75', '10', 'uploads/1781234237_3_pic1.webp', '4', NULL),
+('76', '9', 'uploads/1781234269_0_pic7.5.webp', '1', NULL),
+('77', '9', 'uploads/1781234269_1_pic7.4.webp', '2', NULL),
+('78', '9', 'uploads/1781234269_2_pic7.2.webp', '3', NULL),
+('79', '9', 'uploads/1781234269_3_pic7.1.webp', '4', NULL),
+('80', '8', 'uploads/1781234454_0_pic6.4.webp', '1', NULL),
+('81', '8', 'uploads/1781234454_1_pic6.3.webp', '2', NULL),
+('82', '8', 'uploads/1781234454_2_pic6.2.webp', '3', NULL),
+('83', '8', 'uploads/1781234454_3_pic6.1.webp', '4', NULL),
+('84', '8', 'uploads/1781234454_4_pic5.4.webp', '5', NULL),
+('92', '6', 'assets/images/16.jpeg', '1', NULL),
+('93', '6', 'uploads/1775542067_0_pic4.webp', '2', 'Red'),
+('94', '6', 'assets/images/12.jpeg', '3', 'Blue'),
+('98', '16', 'uploads/1781423912_0_0_pic8.5.webp', '0', 'RED'),
+('99', '16', 'uploads/1781423912_0_1_pic8.4.webp', '1', 'RED'),
+('100', '16', 'uploads/1781423912_0_2_pic8.3.webp', '2', 'RED'),
+('101', '16', 'uploads/1781423912_0_3_pic8.2.webp', '3', 'RED'),
+('102', '16', 'uploads/1781423912_2_0_pic2.3.webp', '4', 'BLACK'),
+('103', '16', 'uploads/1781423912_2_1_pic2.2.webp', '5', 'BLACK'),
+('104', '16', 'uploads/1781423912_2_2_pic3.1.webp', '6', 'BLACK'),
+('105', '16', 'uploads/1781423912_2_3_pic2.4.webp', '7', 'BLACK');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_reviews`
+--
+
+DROP TABLE IF EXISTS `product_reviews`;
+CREATE TABLE `product_reviews` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL DEFAULT 5,
+  `review_text` text NOT NULL,
+  `photo_path` varchar(255) DEFAULT NULL,
+  `admin_reply` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_reviews`
+--
+
+INSERT INTO `product_reviews` (`id`, `product_id`, `user_id`, `rating`, `review_text`, `photo_path`, `admin_reply`, `created_at`) VALUES
+('3', '6', '2', '4', 'A must-have for any pet owner.', NULL, 'Thank you so much for your feedback! We\'re thrilled you like it.', '2026-05-29 10:13:31'),
+('4', '8', '2', '4', 'Super cute and exactly as described.', NULL, 'Thank you so much for your feedback! We\'re thrilled you like it.', '2026-05-29 10:13:31'),
+('5', '8', '2', '5', 'Elegantly designed and very durable.', NULL, 'Thank you so much for your feedback! We\'re thrilled you like it.', '2026-05-29 10:13:31'),
+('6', '9', '2', '5', 'Good value for the price, but shipping was a bit slow.', NULL, NULL, '2026-05-29 10:13:31'),
+('7', '9', '2', '4', 'Absolutely love this product! The quality is amazing.', NULL, 'Thank you so much for your feedback! We\'re thrilled you like it.', '2026-05-29 10:13:31'),
+('8', '10', '2', '4', 'Good value for the price, but shipping was a bit slow.', NULL, NULL, '2026-05-29 10:13:31'),
+('9', '10', '2', '5', 'Elegantly designed and very durable.', NULL, NULL, '2026-05-29 10:13:31'),
+('10', '12', '2', '5', 'My pet won\'t stop playing with this. Highly recommended!', NULL, NULL, '2026-05-29 10:13:31'),
+('11', '14', '2', '4', 'My pet won\'t stop playing with this. Highly recommended!', NULL, NULL, '2026-05-29 10:13:31');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_specifications`
+--
+
+DROP TABLE IF EXISTS `product_specifications`;
+CREATE TABLE `product_specifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `spec_name` varchar(255) NOT NULL,
+  `spec_value` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_specifications`
+--
+
+INSERT INTO `product_specifications` (`id`, `product_id`, `spec_name`, `spec_value`) VALUES
+('1', '16', 'weigtth', '10kg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_variations`
+--
+
+DROP TABLE IF EXISTS `product_variations`;
+CREATE TABLE `product_variations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `variation_name` varchar(255) NOT NULL,
+  `variation_value` varchar(255) NOT NULL,
+  `price_modifier` decimal(10,2) DEFAULT 0.00,
+  `stock_quantity` int(11) DEFAULT 10,
+  `height` decimal(10,2) DEFAULT NULL,
+  `width` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_variations`
+--
+
+INSERT INTO `product_variations` (`id`, `product_id`, `variation_name`, `variation_value`, `price_modifier`, `stock_quantity`, `height`, `width`) VALUES
+('15', '15', 'Combination', 'red / s', '1500.00', '10', '15.00', '55.00'),
+('16', '15', 'Combination', 'red / m', '12555.00', '10', '55.00', '55.00'),
+('17', '15', 'Combination', 'green / s', '13633.00', '10', '30.00', '55.00'),
+('18', '15', 'Combination', 'green / m', '15666.00', '10', '20.00', '20.00'),
+('19', '15', 'Combination', 'black / s', '12255.00', '10', '15.00', '10.00'),
+('20', '15', 'Combination', 'black / m', '15666.00', '10', '30.00', '25.00'),
+('21', '6', 'Combination', 'Red / Medium', '-150.00', '5', '50.00', '40.00'),
+('22', '6', 'Combination', 'Red / Large', '250.00', '8', '80.00', '60.00'),
+('27', '16', 'Combination', 'RED / M', '100.00', '10', '150.00', '200.00'),
+('28', '16', 'Combination', 'RED / L', '200.00', '10', '250.00', '300.00'),
+('29', '16', 'Combination', 'BLACK / M', '100.00', '10', '150.00', '200.00'),
+('30', '16', 'Combination', 'BLACK / L', '200.00', '10', '250.00', '300.00');
 
 -- --------------------------------------------------------
 
@@ -122,8 +353,9 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, 
 -- Table structure for table `products`
 --
 
+DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
@@ -133,75 +365,48 @@ CREATE TABLE `products` (
   `rating` int(11) DEFAULT 5,
   `stock_status` varchar(50) DEFAULT 'In Stock',
   `stock_quantity` int(11) DEFAULT 10,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_trending` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `title`, `description`, `price`, `old_price`, `category`, `badge`, `rating`, `stock_status`, `stock_quantity`, `created_at`) VALUES
-(5, 'Wooden Kennel', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '3500.00', '5000.00', 'dog', '', 5, 'In Stock', 12, '2026-04-07 00:37:47'),
-(6, 'WOODEN KENNELS', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '5000.00', '7000.00', 'dog', '', 5, 'In Stock', 10, '2026-04-07 00:38:55'),
-(8, 'WOODEN TEAK KENNEL', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '10000.00', '12000.00', 'dog', '', 5, 'In Stock', 19, '2026-04-07 00:44:53'),
-(9, 'WOODEN KENNEL', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '8200.00', '9000.00', 'dog', '', 5, 'In Stock', 12, '2026-04-07 00:45:45'),
-(10, 'WOODEN KENNEL', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '6000.00', '7000.00', 'dog', '', 5, 'In Stock', 10, '2026-04-07 00:47:15'),
-(12, 'WOOODEN MAHAGONI', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '14000.00', '20000.00', 'dog', '', 5, 'In Stock', 10, '2026-04-07 01:46:41'),
-(14, 'STEEL KENNEL', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '3500.00', '7555.00', 'dog', '', 5, 'In Stock', 14, '2026-04-07 01:53:28');
+INSERT INTO `products` (`id`, `title`, `description`, `price`, `old_price`, `category`, `badge`, `rating`, `stock_status`, `stock_quantity`, `created_at`, `is_trending`) VALUES
+('6', 'WOODEN KENNELS', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '5000.00', '7000.00', 'DOG', '', '5', 'In Stock', '7', '2026-04-07 06:08:55', '1'),
+('8', 'WOODEN TEAK KENNEL', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '10000.00', '12000.00', 'DOG', '', '5', 'In Stock', '19', '2026-04-07 06:14:53', '1'),
+('9', 'WOODEN KENNEL', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '8200.00', '9000.00', 'DOG', '', '5', 'In Stock', '12', '2026-04-07 06:15:45', '0'),
+('10', 'WOODEN KENNEL', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '6000.00', '7000.00', 'DOG', '', '5', 'In Stock', '10', '2026-04-07 06:17:15', '0'),
+('12', 'WOOODEN MAHAGONI', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum', '14000.00', '20000.00', 'DOG', '', '5', 'In Stock', '10', '2026-04-07 07:16:41', '0'),
+('14', 'STEEL KENNEL', '<p><strong>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</strong></p>', '3500.00', '7555.00', 'DOG', '', '5', 'In Stock', '14', '2026-04-07 07:23:28', '0'),
+('16', 'pet house', '<p><span style=\"background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);\">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</span></p>', '0.00', NULL, 'DOG', '', '5', 'In Stock', '10', '2026-06-14 13:28:32', '1');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `product_images`
+-- Table structure for table `testimonials`
 --
 
-CREATE TABLE `product_images` (
-  `id` int(11) NOT NULL,
-  `product_id` int(11) DEFAULT NULL,
-  `image_path` varchar(255) NOT NULL,
-  `sort_order` int(11) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `testimonials`;
+CREATE TABLE `testimonials` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_name` varchar(255) NOT NULL,
+  `quote` text NOT NULL,
+  `rating` int(11) DEFAULT 5,
+  `image_path` varchar(255) DEFAULT 'assets/images/user-placeholder.jpg',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `product_images`
+-- Dumping data for table `testimonials`
 --
 
-INSERT INTO `product_images` (`id`, `product_id`, `image_path`, `sort_order`) VALUES
-(12, 5, 'uploads/1775542067_0_pic4.webp', 0),
-(13, 5, 'uploads/1775542067_1_pic3.webp', 1),
-(14, 5, 'uploads/1775542067_2_pic2.webp', 2),
-(15, 5, 'uploads/1775542067_3_pic1.webp', 3),
-(16, 6, 'uploads/1775542135_0_pic2.4.webp', 0),
-(17, 6, 'uploads/1775542135_1_pic2.3.webp', 1),
-(18, 6, 'uploads/1775542135_2_pic2.2.webp', 2),
-(19, 6, 'uploads/1775542135_3_pic2.1.webp', 3),
-(26, 8, 'uploads/1775542493_0_pic3.6.webp', 0),
-(27, 8, 'uploads/1775542493_1_pic3.5.webp', 1),
-(28, 8, 'uploads/1775542493_2_pic3.4.webp', 2),
-(29, 8, 'uploads/1775542493_3_pic3.3.webp', 3),
-(30, 8, 'uploads/1775542493_4_pic3.2.webp', 4),
-(31, 8, 'uploads/1775542493_5_pic3.1.webp', 5),
-(32, 9, 'uploads/1775542545_0_pic4.4.webp', 0),
-(33, 9, 'uploads/1775542545_1_pic4.3.webp', 1),
-(34, 9, 'uploads/1775542545_2_pic4.2.webp', 2),
-(35, 9, 'uploads/1775542545_3_pic4.1.webp', 3),
-(36, 10, 'uploads/1775542635_0_pic5.4.webp', 0),
-(37, 10, 'uploads/1775542635_1_pic5.3.webp', 1),
-(38, 10, 'uploads/1775542635_2_pic5.2.webp', 2),
-(39, 10, 'uploads/1775542635_3_pic5.1.webp', 3),
-(45, 12, 'uploads/1775546201_0_pic8.5.webp', 0),
-(46, 12, 'uploads/1775546201_1_pic8.4.webp', 1),
-(47, 12, 'uploads/1775546201_2_pic8.3.webp', 2),
--- Constraints for table `product_images`
-(48, 12, 'uploads/1775546201_3_pic8.2.webp', 3),
-(49, 12, 'uploads/1775546201_4_pic8.1.webp', 4),
-(56, 14, 'uploads/1775546608_0_pic7.7.webp', 0),
-(57, 14, 'uploads/1775546608_1_pic7.6.webp', 1),
-(58, 14, 'uploads/1775546608_2_pic7.5.webp', 2),
-(59, 14, 'uploads/1775546608_3_pic7.4.webp', 3),
-(60, 14, 'uploads/1775546608_4_pic7.3.webp', 4),
-(61, 14, 'uploads/1775546608_5_pic7.2.webp', 5),
-(62, 14, 'uploads/1775546608_6_pic7.1.webp', 6);
+INSERT INTO `testimonials` (`id`, `customer_name`, `quote`, `rating`, `image_path`, `created_at`) VALUES
+('1', 'Sojin Mathew', 'Archipaws pet shop has the best premium kennels ever. Very happy with the quality!', '5', 'assets/images/user-placeholder.jpg', '2026-05-29 10:13:31'),
+('2', 'Dijo', 'Extremely durable teak wood dog house. Five stars!', '5', 'assets/images/user-placeholder.jpg', '2026-05-29 10:13:31');
 
 -- --------------------------------------------------------
 
@@ -209,146 +414,27 @@ INSERT INTO `product_images` (`id`, `product_id`, `image_path`, `sort_order`) VA
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phone` varchar(50) DEFAULT NULL,
   `address` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `address`, `created_at`) VALUES
-(1, 'SOJIN MATHEW', 'sojinmathew1040@gmail.com', '$2y$10$eAVSRLk2.z1.lnDTzi2mdeEIq.lCoXZAK0ui49NB4EfYF5xmZ8N0m', NULL, NULL, '2026-04-06 03:55:07'),
-(2, 'dijo', 'dijo@gmail.com', '$2y$10$Im.j/idrHzRzEkmPRmt/TubaLq8oLfomUEMEOwO9191sFVqjzGgPO', NULL, NULL, '2026-04-06 04:26:33');
+('1', 'SOJIN MATHEW', 'sojinmathew1040@gmail.com', '$2y$10$eAVSRLk2.z1.lnDTzi2mdeEIq.lCoXZAK0ui49NB4EfYF5xmZ8N0m', NULL, NULL, '2026-04-06 09:25:07'),
+('2', 'dijo', 'dijo@gmail.com', '$2y$10$Im.j/idrHzRzEkmPRmt/TubaLq8oLfomUEMEOwO9191sFVqjzGgPO', NULL, NULL, '2026-04-06 09:56:33'),
+('3', 'Test User', 'testuser@example.com', '$2y$10$E9jD3/7XIX28bGUAsLbrSegyy3wKhxZ28sFKY676GPRhXVG6YoMGy', NULL, NULL, '2026-06-14 12:42:11');
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `admins`
---
-ALTER TABLE `admins`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
-
---
--- Indexes for table `hero_slides`
---
-ALTER TABLE `hero_slides`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `order_items`
---
-ALTER TABLE `order_items`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `order_id` (`order_id`),
-  ADD KEY `product_id` (`product_id`);
-
---
--- Indexes for table `products`
---
-ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `product_images`
---
-ALTER TABLE `product_images`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `product_id` (`product_id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `admins`
---
-ALTER TABLE `admins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `hero_slides`
---
-ALTER TABLE `hero_slides`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT for table `orders`
---
-ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `order_items`
---
-ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `products`
---
-ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
-
---
--- AUTO_INCREMENT for table `product_images`
---
-ALTER TABLE `product_images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `orders`
---
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `order_items`
---
-ALTER TABLE `order_items`
-  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `product_images`
---
-ALTER TABLE `product_images`
-  ADD CONSTRAINT `product_images_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

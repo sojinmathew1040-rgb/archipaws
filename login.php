@@ -236,6 +236,7 @@ include 'header.php';
     .pro-dev-link:hover {
         text-decoration: underline;
     }
+
 </style>
 
 <section class="pro-auth-section">
@@ -266,7 +267,7 @@ include 'header.php';
                 <div id="g_id_onload_login" data-client_id="<?= htmlspecialchars(GOOGLE_CLIENT_ID) ?>" data-context="signin"
                     data-ux_mode="popup" data-callback="handleGoogleCb" data-auto_prompt="false"></div>
                 <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
-                    data-text="signin_with" data-size="large" data-logo_alignment="center"
+                    data-text="signin_with" data-size="medium" data-logo_alignment="center"
                     style="display: flex; justify-content: center;"></div>
             <?php else: ?>
                 <?php renderGoogleDevWarning(); ?>
@@ -306,7 +307,7 @@ include 'header.php';
                 <div id="g_id_onload" data-client_id="<?= htmlspecialchars(GOOGLE_CLIENT_ID) ?>" data-context="use"
                     data-ux_mode="popup" data-callback="handleGoogleCb" data-auto_prompt="false"></div>
                 <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
-                    data-text="signup_with" data-size="large" data-logo_alignment="center"
+                    data-text="signup_with" data-size="medium" data-logo_alignment="center"
                     style="display: flex; justify-content: center;"></div>
             <?php else: ?>
                 <?php renderGoogleDevWarning(); ?>
@@ -438,6 +439,7 @@ include 'header.php';
         } catch (error) { alert('Network error during simulated Sign-In.'); }
     }
 </script>
+
 <?php if ($isGoogleConfigured): ?>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 <?php endif; ?>
